@@ -1,5 +1,9 @@
 package com.github.lf2a.domain;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -11,8 +15,11 @@ import java.util.Objects;
  * @version 1.0
  * @since 17/03/2021
  */
+@Entity
 public class Categoria implements Serializable {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String nome;
 
