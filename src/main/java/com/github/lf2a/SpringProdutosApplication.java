@@ -2,10 +2,15 @@ package com.github.lf2a;
 
 import com.github.lf2a.domain.Categoria;
 import com.github.lf2a.domain.Cidade;
+import com.github.lf2a.domain.Cliente;
+import com.github.lf2a.domain.Endereco;
 import com.github.lf2a.domain.Estado;
 import com.github.lf2a.domain.Produto;
+import com.github.lf2a.domain.enums.TipoCliente;
 import com.github.lf2a.repositories.CategoriaRepository;
 import com.github.lf2a.repositories.CidadeRepository;
+import com.github.lf2a.repositories.ClienteRepository;
+import com.github.lf2a.repositories.EnderecoRepository;
 import com.github.lf2a.repositories.EstadoRepository;
 import com.github.lf2a.repositories.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +34,12 @@ public class SpringProdutosApplication implements CommandLineRunner {
 
     @Autowired
     private CidadeRepository repoCid;
+
+    @Autowired
+    private EnderecoRepository repoEnd;
+
+    @Autowired
+    private ClienteRepository repoCli;
 
     public static void main(String[] args) {
         SpringApplication.run(SpringProdutosApplication.class, args);
@@ -65,5 +76,16 @@ public class SpringProdutosApplication implements CommandLineRunner {
 
         repoEst.saveAll(Arrays.asList(est1, est2));
         repoCid.saveAll(Arrays.asList(c1, c2, c3));
+
+        Cliente cli1 = new Cliente(null, "Maria Silva", "maria@gmail.com", "000.000.000-00", TipoCliente.PESSOAFISICA);
+        cli1.getTelefones().addAll(Arrays.asList("1234-5678", "8765-4321"));
+
+        Endereco e1 = new Endereco(null, "Rua Flores", "300", "Apto 303", "Jardim", "34567-856", cli1, c1);
+        Endereco e2 = new Endereco(null, "Avenida Matos", "105", "Sala 800", "Centro", "23454-556", cli1, c2);
+
+        cli1.getEnderecos().addAll(Arrays.asList(e1, e2));
+
+        repoCli.save(cli1);
+        repoEnd.saveAll(Arrays.asList(e1, e2));
     }
 }
