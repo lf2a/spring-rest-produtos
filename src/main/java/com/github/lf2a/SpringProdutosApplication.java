@@ -5,6 +5,7 @@ import com.github.lf2a.domain.Cidade;
 import com.github.lf2a.domain.Cliente;
 import com.github.lf2a.domain.Endereco;
 import com.github.lf2a.domain.Estado;
+import com.github.lf2a.domain.ItemPedido;
 import com.github.lf2a.domain.Pagamento;
 import com.github.lf2a.domain.PagamentoComBoleto;
 import com.github.lf2a.domain.PagamentoComCartao;
@@ -17,6 +18,7 @@ import com.github.lf2a.repositories.CidadeRepository;
 import com.github.lf2a.repositories.ClienteRepository;
 import com.github.lf2a.repositories.EnderecoRepository;
 import com.github.lf2a.repositories.EstadoRepository;
+import com.github.lf2a.repositories.ItemPedidoRepository;
 import com.github.lf2a.repositories.PagamentoRepository;
 import com.github.lf2a.repositories.PedidoRepository;
 import com.github.lf2a.repositories.ProdutoRepository;
@@ -54,6 +56,9 @@ public class SpringProdutosApplication implements CommandLineRunner {
 
     @Autowired
     private PagamentoRepository repoPag;
+
+    @Autowired
+    private ItemPedidoRepository repoItemPed;
 
     public static void main(String[] args) {
         SpringApplication.run(SpringProdutosApplication.class, args);
@@ -116,5 +121,18 @@ public class SpringProdutosApplication implements CommandLineRunner {
 
         repoPed.saveAll(Arrays.asList(ped1, ped2));
         repoPag.saveAll(Arrays.asList(pag1, pag2));
+
+        ItemPedido ip1 = new ItemPedido(ped1, prod1, 0.00, 1, 2000.00);
+        ItemPedido ip2 = new ItemPedido(ped1, prod3, 0.00, 2, 80.00);
+        ItemPedido ip3 = new ItemPedido(ped2, prod2, 100.00, 1, 800.00);
+
+        ped1.getItens().addAll(Arrays.asList(ip1, ip2));
+        ped2.getItens().addAll(Arrays.asList(ip3));
+
+        prod1.getItens().addAll(Arrays.asList(ip1));
+        prod2.getItens().addAll(Arrays.asList(ip3));
+        prod3.getItens().addAll(Arrays.asList(ip2));
+
+        repoItemPed.saveAll(Arrays.asList(ip1, ip2, ip3));
     }
 }
