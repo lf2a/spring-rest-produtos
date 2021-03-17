@@ -5,8 +5,6 @@ import com.github.lf2a.repositories.CategoriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 /**
  * <h1>CategoriaService.java</h1>
  * ---
