@@ -2,6 +2,7 @@ package com.github.lf2a.services;
 
 import com.github.lf2a.domain.Categoria;
 import com.github.lf2a.repositories.CategoriaRepository;
+import com.github.lf2a.services.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,8 @@ public class CategoriaService {
     private CategoriaRepository repo;
 
     public Categoria buscar(Integer id) {
-        return  repo.findById(id).orElse(null);
+        return repo.findById(id).orElseThrow(() -> {
+            throw new ObjectNotFoundException("Objeto não encontrado! Id:" + id + ", Tipo:" + Categoria.class.getName());
+        });
     }
 }
