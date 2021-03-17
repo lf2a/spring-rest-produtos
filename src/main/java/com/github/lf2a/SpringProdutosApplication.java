@@ -1,8 +1,12 @@
 package com.github.lf2a;
 
 import com.github.lf2a.domain.Categoria;
+import com.github.lf2a.domain.Cidade;
+import com.github.lf2a.domain.Estado;
 import com.github.lf2a.domain.Produto;
 import com.github.lf2a.repositories.CategoriaRepository;
+import com.github.lf2a.repositories.CidadeRepository;
+import com.github.lf2a.repositories.EstadoRepository;
 import com.github.lf2a.repositories.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -19,6 +23,12 @@ public class SpringProdutosApplication implements CommandLineRunner {
 
     @Autowired
     private ProdutoRepository repoProd;
+
+    @Autowired
+    private EstadoRepository repoEst;
+
+    @Autowired
+    private CidadeRepository repoCid;
 
     public static void main(String[] args) {
         SpringApplication.run(SpringProdutosApplication.class, args);
@@ -42,5 +52,18 @@ public class SpringProdutosApplication implements CommandLineRunner {
 
         repo.saveAll(Arrays.asList(cat1, cat2));
         repoProd.saveAll(Arrays.asList(prod1, prod2, prod3));
+
+        Estado est1 = new Estado(null, "Minas Gerais");
+        Estado est2 = new Estado(null, "São Paulo");
+
+        Cidade c1 = new Cidade(null, "Uberlandia", est1);
+        Cidade c2 = new Cidade(null, "São Paulo", est2);
+        Cidade c3 = new Cidade(null, "Campinas", est2);
+
+        est1.getCidades().addAll(Arrays.asList(c1));
+        est2.getCidades().addAll(Arrays.asList(c2, c3));
+
+        repoEst.saveAll(Arrays.asList(est1, est2));
+        repoCid.saveAll(Arrays.asList(c1, c2, c3));
     }
 }
