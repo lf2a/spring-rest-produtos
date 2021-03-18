@@ -1,5 +1,6 @@
 package com.github.lf2a.domain;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.github.lf2a.domain.enums.EstadoPagamento;
 
 import javax.persistence.Entity;
@@ -13,6 +14,7 @@ import javax.persistence.Entity;
  * @since 17/03/2021
  */
 @Entity
+@JsonTypeName("pagamentoComCartao")
 public class PagamentoComCartao extends Pagamento {
 
     private Integer numeroDeParcelas;

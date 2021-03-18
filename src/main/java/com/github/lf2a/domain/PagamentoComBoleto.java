@@ -1,6 +1,7 @@
 package com.github.lf2a.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.github.lf2a.domain.enums.EstadoPagamento;
 
 import javax.persistence.Entity;
@@ -15,6 +16,7 @@ import java.util.Date;
  * @since 17/03/2021
  */
 @Entity
+@JsonTypeName("pagamentoComBoleto")
 public class PagamentoComBoleto extends Pagamento {
 
     @JsonFormat(pattern = "dd/MM/yyyy")
