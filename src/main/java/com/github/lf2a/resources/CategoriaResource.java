@@ -1,6 +1,7 @@
 package com.github.lf2a.resources;
 
 import com.github.lf2a.domain.Categoria;
+import com.github.lf2a.dto.CategoriaDTO;
 import com.github.lf2a.services.CategoriaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <h1>CategoriaResource.java</h1>
@@ -61,5 +64,17 @@ public class CategoriaResource {
         service.delete(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity<List<CategoriaDTO>> findAll() {
+        var categoriaList = service.findAll();
+
+        var catDto = categoriaList
+                .stream()
+                .map(CategoriaDTO::new)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok().body(catDto);
     }
 }
