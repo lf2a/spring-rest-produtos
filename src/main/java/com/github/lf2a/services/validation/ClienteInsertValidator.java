@@ -2,8 +2,10 @@ package com.github.lf2a.services.validation;
 
 import com.github.lf2a.domain.enums.TipoCliente;
 import com.github.lf2a.dto.ClienteNewDTO;
+import com.github.lf2a.repositories.ClienteRepository;
 import com.github.lf2a.resources.exception.FieldMessage;
 import com.github.lf2a.services.validation.utils.BR;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -20,6 +22,8 @@ import java.util.List;
  */
 public class ClienteInsertValidator implements ConstraintValidator<ClienteInsert, ClienteNewDTO> {
 
+    @Autowired
+    private ClienteRepository clienteRepository;
 
     @Override
     public void initialize(ClienteInsert constraintAnnotation) {
@@ -35,6 +39,12 @@ public class ClienteInsertValidator implements ConstraintValidator<ClienteInsert
 
         if (clienteNewDTO.getTipo().equals(TipoCliente.PESSOAJURIDICA.getCod()) && !BR.isValidCNPJ(clienteNewDTO.getCpfOuCnpj())) {
             list.add(new FieldMessage("cpfOuCnpj", "CNPJ invalido"));
+        }
+
+        var cliente = clienteRepository.findByEmail(clienteNewDTO.getEmail());
+
+        if (cliente != null) {
+            list.add(new FieldMessage("email", "Email já existente"));
         }
 
         list.forEach(f -> {
