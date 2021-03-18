@@ -1,6 +1,7 @@
 package com.github.lf2a.dto;
 
 import com.github.lf2a.domain.Cliente;
+import com.github.lf2a.services.validation.ClienteUpdate;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;
@@ -15,6 +16,7 @@ import java.io.Serializable;
  * @version 1.0
  * @since 18/03/2021
  */
+@ClienteUpdate
 public class ClienteDTO implements Serializable {
 
     private Integer id;
