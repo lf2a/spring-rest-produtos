@@ -49,7 +49,8 @@ public class Pedido implements Serializable {
     @OneToMany(mappedBy = "id.pedido")
     private Set<ItemPedido> itens = new HashSet<>();
 
-    public Pedido() {}
+    public Pedido() {
+    }
 
     public Pedido(Integer id, Date instante, Cliente cliente, Endereco enderecoDeEntrega) {
         this.id = id;
@@ -104,6 +105,10 @@ public class Pedido implements Serializable {
 
     public void setItens(Set<ItemPedido> itens) {
         this.itens = itens;
+    }
+
+    public double getValorTotal() {
+        return itens.stream().mapToDouble(ItemPedido::getSubTotal).sum();
     }
 
     @Override
