@@ -1,10 +1,15 @@
 package com.github.lf2a.services;
 
 import com.github.lf2a.domain.Categoria;
+import com.github.lf2a.domain.Cidade;
 import com.github.lf2a.domain.Cliente;
-import com.github.lf2a.dto.CategoriaDTO;
+import com.github.lf2a.domain.Endereco;
+import com.github.lf2a.domain.enums.TipoCliente;
 import com.github.lf2a.dto.ClienteDTO;
+import com.github.lf2a.dto.ClienteNewDTO;
+import com.github.lf2a.repositories.CidadeRepository;
 import com.github.lf2a.repositories.ClienteRepository;
+import com.github.lf2a.repositories.EnderecoRepository;
 import com.github.lf2a.services.exceptions.DataIntegrityException;
 import com.github.lf2a.services.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -30,10 +36,24 @@ public class ClienteService {
     @Autowired
     private ClienteRepository repo;
 
+    @Autowired
+    private EnderecoRepository enderecoRepository;
+
+    @Autowired
+    private CidadeRepository cidadeRepository;
+
     public Cliente find(Integer id) {
         return repo.findById(id).orElseThrow(() -> {
             throw new ObjectNotFoundException("Objeto não encontrado! Id:" + id + ", Tipo:" + Cliente.class.getName());
         });
+    }
+
+    @Transactional
+    public Cliente insert(Cliente cliente) {
+        cliente.setId(null);
+        cliente = repo.save(cliente);
+        enderecoRepository.saveAll(cliente.getEnderecos());
+        return cliente;
     }
 
     public Cliente update(Cliente cliente) {
@@ -63,7 +83,43 @@ public class ClienteService {
     }
 
     public Cliente fromDto(ClienteDTO clienteDTO) {
-        return new Cliente(clienteDTO.getId() , clienteDTO.getNome(), clienteDTO.getEmail(), null, null);
+        return new Cliente(clienteDTO.getId(), clienteDTO.getNome(), clienteDTO.getEmail(), null, null);
+    }
+
+    public Cliente fromDto(ClienteNewDTO clienteNewDTO) {
+        var cliente = new Cliente(null,
+                clienteNewDTO.getNome(),
+                clienteNewDTO.getEmail(),
+                clienteNewDTO.getCpfOuCnpj(),
+                TipoCliente.toEnum(clienteNewDTO.getTipo()));
+
+        var cidade = cidadeRepository.
+                findById(clienteNewDTO.getCidadeId())
+                .orElseThrow(() -> {
+                    throw new ObjectNotFoundException("Cidade não encontrada! Id:" + clienteNewDTO.getCidadeId() + ", Tipo:" + Cidade.class.getName());
+                });;
+
+        var endereco = new Endereco(null,
+                clienteNewDTO.getLogradouro(),
+                clienteNewDTO.getNumero(),
+                clienteNewDTO.getComplemento(),
+                clienteNewDTO.getBairro(),
+                clienteNewDTO.getCep(),
+                cliente,
+                cidade);
+
+        cliente.getEnderecos().add(endereco);
+        cliente.getTelefones().add(clienteNewDTO.getTelefone1());
+
+        if (clienteNewDTO.getTelefone2() != null) {
+            cliente.getTelefones().add(clienteNewDTO.getTelefone2());
+        }
+
+        if (clienteNewDTO.getTelefone3() != null) {
+            cliente.getTelefones().add(clienteNewDTO.getTelefone3());
+        }
+
+        return cliente;
     }
 
     private void updateData(Cliente newObj, Cliente obj) {

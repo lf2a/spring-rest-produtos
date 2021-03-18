@@ -1,7 +1,9 @@
 package com.github.lf2a.resources;
 
 import com.github.lf2a.domain.Cliente;
+import com.github.lf2a.dto.CategoriaDTO;
 import com.github.lf2a.dto.ClienteDTO;
+import com.github.lf2a.dto.ClienteNewDTO;
 import com.github.lf2a.services.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,6 +41,20 @@ public class ClienteResource {
         var obj = service.find(id);
 
         return ResponseEntity.ok().body(obj);
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity<Void> insert(@Valid @RequestBody ClienteNewDTO clienteNewDTO) {
+        var cliente = service.fromDto(clienteNewDTO);
+        var obj = service.insert(cliente);
+
+        URI uri = ServletUriComponentsBuilder.
+                fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(obj.getId())
+                .toUri();
+
+        return ResponseEntity.created(uri).build();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
