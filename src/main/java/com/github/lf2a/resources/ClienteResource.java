@@ -1,5 +1,6 @@
 package com.github.lf2a.resources;
 
+import com.github.lf2a.domain.Cliente;
 import com.github.lf2a.services.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +25,8 @@ public class ClienteResource {
     private ClienteService service;
 
     @RequestMapping(value = "/{id}",method = RequestMethod.GET)
-    public ResponseEntity<?> find(@PathVariable("id") Integer id) {
-        var obj = service.buscar(id);
+    public ResponseEntity<Cliente> find(@PathVariable("id") Integer id) {
+        var obj = service.find(id);
 
         return ResponseEntity.ok().body(obj);
     }

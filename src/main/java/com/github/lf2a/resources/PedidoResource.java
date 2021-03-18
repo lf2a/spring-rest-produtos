@@ -1,5 +1,6 @@
 package com.github.lf2a.resources;
 
+import com.github.lf2a.domain.Pedido;
 import com.github.lf2a.services.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +25,8 @@ public class PedidoResource {
     private PedidoService service;
 
     @RequestMapping(value = "/{id}",method = RequestMethod.GET)
-    public ResponseEntity<?> find(@PathVariable("id") Integer id) {
-        var obj = service.buscar(id);
+    public ResponseEntity<Pedido> find(@PathVariable("id") Integer id) {
+        var obj = service.find(id);
 
         return ResponseEntity.ok().body(obj);
     }
