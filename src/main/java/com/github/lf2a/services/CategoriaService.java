@@ -1,6 +1,7 @@
 package com.github.lf2a.services;
 
 import com.github.lf2a.domain.Categoria;
+import com.github.lf2a.dto.CategoriaDTO;
 import com.github.lf2a.repositories.CategoriaRepository;
 import com.github.lf2a.services.exceptions.DataIntegrityException;
 import com.github.lf2a.services.exceptions.ObjectNotFoundException;
@@ -61,5 +62,9 @@ public class CategoriaService {
         PageRequest pageRequest = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction), orderBy);
 
         return repo.findAll(pageRequest);
+    }
+
+    public Categoria fromDto(CategoriaDTO categoriaDTO) {
+        return new Categoria(categoriaDTO.getId(), categoriaDTO.getNome());
     }
 }
