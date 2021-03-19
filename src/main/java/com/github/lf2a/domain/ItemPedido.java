@@ -101,4 +101,14 @@ public class ItemPedido implements Serializable {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("ItemPedido{");
+        sb.append("quantidade=").append(quantidade);
+        sb.append(", preco=").append(preco);
+        sb.append(", subtotal=").append(getSubTotal());
+        sb.append('}');
+        return sb.toString();
+    }
 }
