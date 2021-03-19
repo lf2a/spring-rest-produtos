@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
+import javax.mail.internet.MimeMessage;
+
 
 /**
  * <h1>MockEmailService.java</h1>
@@ -22,6 +24,13 @@ public class MockEmailService extends AbstractEmailService {
     @Override
     public void sendEmail(SimpleMailMessage message) {
         LOG.info("Simulando envio de email");
+        LOG.info(message.toString());
+        LOG.info("Email enviado");
+    }
+
+    @Override
+    public void sendHtmlEmail(MimeMessage message) {
+        LOG.info("Simulando envio de email HTML...");
         LOG.info(message.toString());
         LOG.info("Email enviado");
     }

@@ -4,6 +4,8 @@ import com.github.lf2a.domain.Pedido;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
+import javax.mail.internet.MimeMessage;
+
 /**
  * <h1>EmailService.java</h1>
  * ---
@@ -17,5 +19,9 @@ public interface EmailService {
 
     void sendOrderConfirmationEmail(Pedido pedido);
 
+    void sendOrderConfirmationHtmlEmail(Pedido pedido);
+
     void sendEmail(SimpleMailMessage message);
+
+    void sendHtmlEmail(MimeMessage message);
 }
