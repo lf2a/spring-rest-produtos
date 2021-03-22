@@ -1,5 +1,6 @@
 package com.github.lf2a.services;
 
+import com.github.lf2a.domain.Cliente;
 import com.github.lf2a.domain.ItemPedido;
 import com.github.lf2a.domain.PagamentoComBoleto;
 import com.github.lf2a.domain.Pedido;
@@ -7,8 +8,13 @@ import com.github.lf2a.domain.enums.EstadoPagamento;
 import com.github.lf2a.repositories.ItemPedidoRepository;
 import com.github.lf2a.repositories.PagamentoRepository;
 import com.github.lf2a.repositories.PedidoRepository;
+import com.github.lf2a.security.UserSS;
+import com.github.lf2a.services.exceptions.AuthorizationException;
 import com.github.lf2a.services.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -72,5 +78,18 @@ public class PedidoService {
         itemPedidoRepository.saveAll(obj.getItens());
         emailService.sendOrderConfirmationHtmlEmail(obj);
         return obj;
+    }
+
+    public Page<Pedido> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
+        UserSS user = UserService.authenticated();
+
+        if (user == null) {
+            throw new AuthorizationException("Acesso negado");
+        }
+
+        PageRequest pageRequest = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction), orderBy);
+        Cliente cliente = clienteService.find(user.getId());
+
+        return repo.findByCliente(cliente, pageRequest);
     }
 }
