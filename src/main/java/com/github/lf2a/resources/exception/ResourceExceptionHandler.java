@@ -1,5 +1,6 @@
 package com.github.lf2a.resources.exception;
 
+import com.github.lf2a.services.exceptions.AuthorizationException;
 import com.github.lf2a.services.exceptions.DataIntegrityException;
 import com.github.lf2a.services.exceptions.ObjectNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -38,5 +39,11 @@ public class ResourceExceptionHandler {
         ValidationError error = new ValidationError(HttpStatus.BAD_REQUEST.value(), "Erro de validação", System.currentTimeMillis());
         exception.getBindingResult().getFieldErrors().forEach(fieldError -> error.addError(fieldError.getField(), fieldError.getDefaultMessage()));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(AuthorizationException.class)
+    public ResponseEntity<StandardError> authorizationException(AuthorizationException exception, HttpServletRequest request) {
+        StandardError standardError = new StandardError(HttpStatus.FORBIDDEN.value(), exception.getMessage(), System.currentTimeMillis());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(standardError);
     }
 }

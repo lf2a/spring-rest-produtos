@@ -4,12 +4,14 @@ import com.github.lf2a.domain.Categoria;
 import com.github.lf2a.domain.Cidade;
 import com.github.lf2a.domain.Cliente;
 import com.github.lf2a.domain.Endereco;
+import com.github.lf2a.domain.enums.Perfil;
 import com.github.lf2a.domain.enums.TipoCliente;
 import com.github.lf2a.dto.ClienteDTO;
 import com.github.lf2a.dto.ClienteNewDTO;
 import com.github.lf2a.repositories.CidadeRepository;
 import com.github.lf2a.repositories.ClienteRepository;
 import com.github.lf2a.repositories.EnderecoRepository;
+import com.github.lf2a.services.exceptions.AuthorizationException;
 import com.github.lf2a.services.exceptions.DataIntegrityException;
 import com.github.lf2a.services.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +49,12 @@ public class ClienteService {
     private BCryptPasswordEncoder passwordEncoder;
 
     public Cliente find(Integer id) {
+        var userSs = UserService.authenticated();
+
+        if (userSs == null || !userSs.hasRole(Perfil.ADMIN) && !id.equals(userSs.getId())) {
+            throw new AuthorizationException("Acesso negado");
+        }
+
         return repo.findById(id).orElseThrow(() -> {
             throw new ObjectNotFoundException("Objeto não encontrado! Id:" + id + ", Tipo:" + Cliente.class.getName());
         });
@@ -101,7 +109,8 @@ public class ClienteService {
                 findById(clienteNewDTO.getCidadeId())
                 .orElseThrow(() -> {
                     throw new ObjectNotFoundException("Cidade não encontrada! Id:" + clienteNewDTO.getCidadeId() + ", Tipo:" + Cidade.class.getName());
-                });;
+                });
+        ;
 
         var endereco = new Endereco(null,
                 clienteNewDTO.getLogradouro(),
