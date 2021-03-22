@@ -1,5 +1,6 @@
 package com.github.lf2a.services;
 
+import com.github.lf2a.domain.Cliente;
 import com.github.lf2a.domain.Pedido;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
@@ -24,4 +25,6 @@ public interface EmailService {
     void sendEmail(SimpleMailMessage message);
 
     void sendHtmlEmail(MimeMessage message);
+
+    void sendNewPasswordEmail(Cliente cliente, String newPass);
 }

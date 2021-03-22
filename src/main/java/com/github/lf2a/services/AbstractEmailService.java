@@ -1,5 +1,6 @@
 package com.github.lf2a.services;
 
+import com.github.lf2a.domain.Cliente;
 import com.github.lf2a.domain.Pedido;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -80,5 +81,20 @@ public abstract class AbstractEmailService implements EmailService {
         context.setVariable("pedido", pedido);
 
         return engine.process("email/confirmacaoPedido", context);
+    }
+
+    @Override
+    public void sendNewPasswordEmail(Cliente cliente, String newPass) {
+        var message = prepareNewPasswordEmail(cliente, newPass);
+    }
+
+    protected SimpleMailMessage prepareNewPasswordEmail(Cliente cliente, String newPass) {
+        var smm = new SimpleMailMessage();
+        smm.setTo(cliente.getEmail());
+        smm.setFrom(sender);
+        smm.setSubject("Solicitação de nova senha");
+        smm.setSentDate(new Date(System.currentTimeMillis()));
+        smm.setText("Nova senha: " + newPass);
+        return smm;
     }
 }
