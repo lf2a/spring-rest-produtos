@@ -23,6 +23,7 @@ import com.github.lf2a.repositories.PagamentoRepository;
 import com.github.lf2a.repositories.PedidoRepository;
 import com.github.lf2a.repositories.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -66,6 +67,9 @@ public class DBService {
 
     @Autowired
     private ItemPedidoRepository repoItemPed;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     public void instantiateTestDatabase() throws ParseException {
         Categoria cat1 = new Categoria(null, "Informática");
@@ -124,7 +128,7 @@ public class DBService {
         repoEst.saveAll(Arrays.asList(est1, est2));
         repoCid.saveAll(Arrays.asList(c1, c2, c3));
 
-        Cliente cli1 = new Cliente(null, "Maria Silva", "luizfilipy014@gmail.com", "000.000.000-00", TipoCliente.PESSOAFISICA);
+        Cliente cli1 = new Cliente(null, "Maria Silva", "luizfilipy014@gmail.com", "000.000.000-00", TipoCliente.PESSOAFISICA, passwordEncoder.encode("123"));
         cli1.getTelefones().addAll(Arrays.asList("1234-5678", "8765-4321"));
 
         Endereco e1 = new Endereco(null, "Rua Flores", "300", "Apto 303", "Jardim", "34567-856", cli1, c1);
