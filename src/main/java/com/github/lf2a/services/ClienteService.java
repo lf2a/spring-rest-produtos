@@ -1,6 +1,5 @@
 package com.github.lf2a.services;
 
-import com.github.lf2a.domain.Categoria;
 import com.github.lf2a.domain.Cidade;
 import com.github.lf2a.domain.Cliente;
 import com.github.lf2a.domain.Endereco;
@@ -59,6 +58,9 @@ public class ClienteService {
 
     @Value("${img.prefix.client.profile}")
     private String prefix;
+
+    @Value("${img.profile.size}")
+    private Integer size;
 
     public Cliente find(Integer id) {
         var userSs = UserService.authenticated();
@@ -161,8 +163,9 @@ public class ClienteService {
         }
 
         var jpgImage = imageService.getJpgImageFromFile(multipartFile);
+        jpgImage = imageService.cropSquare(jpgImage);
+        jpgImage = imageService.resize(jpgImage, size);
 
-        var uri = s3Service.uploadFile(multipartFile);
         String fileName = String.format("%s%s.jpg", prefix, userSs.getId());
 
         return s3Service.uploadFile(imageService.getInputStream(jpgImage, "jpg"), fileName, "image");
