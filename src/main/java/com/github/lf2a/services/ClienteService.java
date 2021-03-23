@@ -15,6 +15,7 @@ import com.github.lf2a.services.exceptions.AuthorizationException;
 import com.github.lf2a.services.exceptions.DataIntegrityException;
 import com.github.lf2a.services.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -51,7 +52,13 @@ public class ClienteService {
     private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
+    private ImageService imageService;
+
+    @Autowired
     private S3Service s3Service;
+
+    @Value("${img.prefix.client.profile}")
+    private String prefix;
 
     public Cliente find(Integer id) {
         var userSs = UserService.authenticated();
@@ -153,12 +160,11 @@ public class ClienteService {
             throw new AuthorizationException("Acesso negado");
         }
 
+        var jpgImage = imageService.getJpgImageFromFile(multipartFile);
+
         var uri = s3Service.uploadFile(multipartFile);
+        String fileName = String.format("%s%s.jpg", prefix, userSs.getId());
 
-        var cliente = repo.findById(userSs.getId()).get();
-        cliente.setImageUrl(uri.toString());
-        repo.save(cliente);
-
-        return uri;
+        return s3Service.uploadFile(imageService.getInputStream(jpgImage, "jpg"), fileName, "image");
     }
 }
